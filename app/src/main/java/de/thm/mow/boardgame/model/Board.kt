@@ -8,7 +8,7 @@ class Board<P> {
     var pieces: MutableList<P>
     val invalid: P
     constructor(empty: P, invalid: P) {
-        pieces = de.thm.mow.boardgame.model.support.MutableList<P>(
+        pieces = MutableList<P>(
             empty,
             columns * rows
         )
@@ -37,10 +37,7 @@ class Board<P> {
     }
 
     operator fun set(column: Int, row: Int, newValue: P) {
-        de.thm.mow.boardgame.model.support.assert(
-            indexIsValidFor(row, column),
-            "Index out of range"
-        )
+        assert(indexIsValidFor(row, column), "Index out of range")
         pieces[indexFor(row, column)] = newValue
     }
 
