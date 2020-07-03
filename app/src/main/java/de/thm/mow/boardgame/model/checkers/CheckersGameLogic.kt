@@ -3,26 +3,19 @@ package de.thm.mow.boardgame.model.checkers
 import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.support.*
 
-class CheckersGameLogic :
-    GameLogic<CheckersPiece> {
+class CheckersGameLogic : GameLogic<CheckersPiece> {
     override fun getInitialBoard() : Board<CheckersPiece> {
-        val board =
-            Board<CheckersPiece>(
-                CheckersPiece.Empty,
-                CheckersPiece.Invalid
-            )
+        val board = Board<CheckersPiece>(CheckersPiece.Empty, CheckersPiece.Invalid)
         for (x in 0 until board.columns) {
             for (y in 0 until 3) {
                 if ((x + y) % 2 == 1) {
-                    board[x, y] =
-                        CheckersPiece.BlackMan
+                    board[x, y] = CheckersPiece.BlackMan
                 }
             }
 
             for (y in board.rows - 3 until board.rows) {
                 if ((x + y) % 2 == 1) {
-                    board[x, y] =
-                        CheckersPiece.WhiteMan
+                    board[x, y] = CheckersPiece.WhiteMan
                 }
             }
         }
@@ -52,13 +45,10 @@ class CheckersGameLogic :
         val forwardDirection = if (player == Player.white) -1 else 1
         for (x in 0 until board.columns) {
             for (y in 0 until board.rows) {
-                val sc: Coords =
-                    Coords(x, y)
+                val sc: Coords = Coords(x, y)
                 val sourcePiece = board[sc.x, sc.y]
                 if (sourcePiece.belongs(player)) {
-                    val sourcePieceIsMan = (sourcePiece == CheckersPiece.getMan(
-                        player
-                    ))
+                    val sourcePieceIsMan = (sourcePiece == CheckersPiece.getMan(player))
                     val range = if (sourcePieceIsMan) 1..1 else 1..board.rows - 1
                     val yDirections = if (sourcePieceIsMan) intArrayOf(forwardDirection) else intArrayOf(-1, 1)
                     for (dy in yDirections) {
@@ -66,34 +56,13 @@ class CheckersGameLogic :
                             for (i in range) {
                                 val tx = sc.x + i * dx
                                 val ty = sc.y + i * dy
-                                val tc: Coords =
-                                    Coords(tx, ty)
+                                val tc: Coords = Coords(tx, ty)
                                 if (board[tx, ty] != CheckersPiece.Empty) {
                                     break
                                 }
 
                                 val targetPiece = getTargetPiece(board, player, tc, sourcePiece)
-                                normalMoves.add(
-                                    Move<CheckersPiece>(
-                                        sc,
-                                        mutableListOf(
-                                            Step(
-                                                tc,
-                                                mutableListOf(
-                                                    Effect(
-                                                        sc,
-                                                        CheckersPiece.Empty
-                                                    ),
-                                                    Effect(
-                                                        tc,
-                                                        targetPiece
-                                                    )
-                                                )
-                                            )
-                                        ),
-                                        null
-                                    )
-                                )
+                                normalMoves.add(Move<CheckersPiece>(sc, mutableListOf(Step(tc, mutableListOf(Effect(sc, CheckersPiece.Empty), Effect(tc, targetPiece)))), null))
                             }
                         }
                     }
@@ -101,13 +70,7 @@ class CheckersGameLogic :
                     // capture
                     val arrayOfSteps = recursiveCapture(board, player, sc, range, yDirections)
                     for (steps in arrayOfSteps) {
-                        captureMoves.add(
-                            Move<CheckersPiece>(
-                                sc,
-                                steps,
-                                null
-                            )
-                        )
+                        captureMoves.add(Move<CheckersPiece>(sc, steps, null))
                     }
                 }
             }
@@ -127,8 +90,7 @@ class CheckersGameLogic :
                 for (i in range) {
                     val tx = cc.x + i * dx
                     val ty = cc.y + i * dy
-                    val tc: Coords =
-                        Coords(tx, ty)
+                    val tc: Coords = Coords(tx, ty)
                     if (board[tx, ty].belongs(player)) {
                         break
                     }
@@ -136,39 +98,17 @@ class CheckersGameLogic :
                     if (board[tx, ty].belongs(player.opponent)) {
                         val t2x = tx + dx
                         val t2y = ty + dy
-                        val t2c: Coords =
-                            Coords(t2x, t2y)
+                        val t2c: Coords = Coords(t2x, t2y)
                         if (board[t2x, t2y] == CheckersPiece.Empty) {
                             val sourcePiece = board[cc.x, cc.y]
                             val targetPiece = getTargetPiece(board, player, t2c, sourcePiece)
-                            val effects: MutableList<Effect<CheckersPiece>> = mutableListOf(
-                                Effect(
-                                    cc,
-                                    CheckersPiece.Empty
-                                ),
-                                Effect(
-                                    tc,
-                                    CheckersPiece.Empty
-                                ),
-                                Effect(
-                                    t2c,
-                                    targetPiece
-                                )
-                            )
-                            val thisSteps = arrayOf(
-                                Step(
-                                    t2c,
-                                    effects
-                                )
-                            )
+                            val effects: MutableList<Effect<CheckersPiece>> = mutableListOf(Effect(cc, CheckersPiece.Empty), Effect(tc, CheckersPiece.Empty), Effect(t2c, targetPiece))
+                            val thisSteps = arrayOf(Step(t2c, effects))
                             if (sourcePiece != targetPiece) {
                                 // promotion took place (man -> king): stop recursion!
                                 result.add(thisSteps)
                             } else {
-                                val newBoard =
-                                    Board<CheckersPiece>(
-                                        board
-                                    )
+                                val newBoard = Board<CheckersPiece>(board)
                                 newBoard.applyChanges(effects)
                                 val arrayOfSubsequentSteps = recursiveCapture(newBoard, player, t2c, range, yDirections)
                                 if (arrayOfSubsequentSteps.isEmpty()) {
@@ -194,9 +134,7 @@ class CheckersGameLogic :
     private fun getTargetPiece(@argLabel("onBoard") board: Board<CheckersPiece>, @argLabel("forPlayer") player: Player, @argLabel("atCoords") coords: Coords, @argLabel("forSourcePiece") sourcePiece: CheckersPiece) : CheckersPiece {
         val finalRow = if (player == Player.white) 0 else board.rows - 1
         if ((coords.y == finalRow)) {
-            return CheckersPiece.getKing(
-                player
-            )
+            return CheckersPiece.getKing(player)
         }
 
         return sourcePiece
@@ -225,10 +163,8 @@ class CheckersGameLogic :
         }
 
         // mobility
-        val whiteMoves = getMoves(board,
-            Player.white, true)
-        val blackMoves = getMoves(board,
-            Player.black, true)
+        val whiteMoves = getMoves(board, Player.white, true)
+        val blackMoves = getMoves(board, Player.black, true)
         result += Double(whiteMoves.size)
         result -= Double(blackMoves.size)
         return result

@@ -8,10 +8,7 @@ class Board<P> {
     var pieces: MutableList<P>
     val invalid: P
     constructor(empty: P, invalid: P) {
-        pieces = MutableList<P>(
-            empty,
-            columns * rows
-        )
+        pieces = MutableList<P>(empty, columns * rows)
         this.invalid = invalid
     }
 
