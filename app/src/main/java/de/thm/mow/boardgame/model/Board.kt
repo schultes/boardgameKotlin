@@ -1,12 +1,17 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.support.*
+
 class Board<P> {
     val columns = 8
     val rows = 8
     var pieces: MutableList<P>
     val invalid: P
     constructor(empty: P, invalid: P) {
-        pieces = MutableList<P>(empty, columns * rows)
+        pieces = de.thm.mow.boardgame.model.support.MutableList<P>(
+            empty,
+            columns * rows
+        )
         this.invalid = invalid
     }
 
@@ -32,7 +37,10 @@ class Board<P> {
     }
 
     operator fun set(column: Int, row: Int, newValue: P) {
-        assert(indexIsValidFor(row, column), "Index out of range")
+        de.thm.mow.boardgame.model.support.assert(
+            indexIsValidFor(row, column),
+            "Index out of range"
+        )
         pieces[indexFor(row, column)] = newValue
     }
 

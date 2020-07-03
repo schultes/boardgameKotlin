@@ -1,5 +1,7 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.support.*
+
 interface Game {
     val isCurrentPlayerWhite: Boolean
     val result: GameResult

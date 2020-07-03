@@ -1,5 +1,6 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.checkers.CheckersPiece
 import org.junit.Assert
 import org.junit.Test
 

@@ -1,5 +1,7 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.support.*
+
 @tuple data class Coords(var x: Int, var y: Int) {}
 
 @tuple data class Effect<P>(var coords: Coords, var newPiece: P) {}

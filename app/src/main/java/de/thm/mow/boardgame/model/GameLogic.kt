@@ -1,5 +1,7 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.support.*
+
 @tuple data class GameResult(var finished: Boolean, var winner: Player?) {}
 
 interface GameLogic<P> {

@@ -1,5 +1,7 @@
 package de.thm.mow.boardgame.model
 
+import de.thm.mow.boardgame.model.support.*
+
 class AI<P, GL : GameLogic<P>>(val logic: GL) {
     var maxSearchDepth = 2
     fun getNextMove(@argLabel("onBoard") board: Board<P>, @argLabel("forPlayer") player: Player) : Move<P> {

@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
 import de.thm.mow.boardgame.model.*
+import de.thm.mow.boardgame.model.checkers.CheckersGameLogic
+import de.thm.mow.boardgame.model.reversi.ReversiGameLogic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -63,7 +65,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
     }
 
     fun selectGame(v: View?) {
-        game = if (v?.id == R.id.rbCheckers) GenericGame(CheckersGameLogic()) else GenericGame(ReversiGameLogic())
+        game = if (v?.id == R.id.rbCheckers) GenericGame(CheckersGameLogic()) else GenericGame(
+            ReversiGameLogic()
+        )
         refreshUI()
     }
 
