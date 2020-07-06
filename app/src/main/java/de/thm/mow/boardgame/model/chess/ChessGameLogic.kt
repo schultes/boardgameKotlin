@@ -80,6 +80,11 @@ class ChessGameLogic : GameLogic<ChessPiece> {
 
     override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player, @argLabel("forSourceCoords") sc: Coords): MutableList<Move<ChessPiece>> {
         val moves = mutableListOf<Move<ChessPiece>>()
+        addMoves(moves, board, player, sc)
+        return moves
+    }
+
+    private fun addMoves(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords) {
         val srcPiece = board[sc.x, sc.y]
 
         if (srcPiece == ChessPiece.getPawn(player)) {
@@ -139,8 +144,6 @@ class ChessGameLogic : GameLogic<ChessPiece> {
                 }
             }
         }
-
-        return moves
     }
 
     private fun addMove(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords, deltaX: Int, deltaY: Int, moveAllowed: Boolean = true, captureAllowed: Boolean = true) {
@@ -164,7 +167,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         val allMoves = mutableListOf<Move<ChessPiece>>()
         for (x in 0..7) {
             for (y in 0..7) {
-                allMoves += getMoves(board, player, Coords(x, y))
+                addMoves(allMoves, board, player, Coords(x, y))
             }
         }
         return allMoves
