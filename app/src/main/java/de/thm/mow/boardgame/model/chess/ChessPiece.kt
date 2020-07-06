@@ -49,11 +49,11 @@ enum class ChessPiece(val rawValue: String) {
     }
 
     fun belongs(@argLabel("toPlayer") player: Player) : Boolean {
-        if (((this == WhitePawn) || (this == WhiteKing)) && (player == Player.white)) {
+        if (((this == WhitePawn) || (this == WhiteKnight) || (this == WhiteBishop) || (this == WhiteRook) || (this == WhiteQueen) || (this == WhiteKing)) && (player == Player.white)) {
             return true
         }
 
-        if (((this == BlackPawn) || (this == BlackKing)) && (player == Player.black)) {
+        if (((this == BlackPawn) || (this == BlackKnight) || (this == BlackBishop) || (this == BlackRook) || (this == BlackQueen) || (this == BlackKing)) && (player == Player.black)) {
             return true
         }
 

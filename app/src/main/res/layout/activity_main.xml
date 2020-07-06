@@ -11,11 +11,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@android:color/black"
+        android:orientation="vertical"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
 
@@ -76,8 +76,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:checkedButton="@id/rbCheckers"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRestart"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonRestart">
 
         <RadioButton
             android:id="@+id/rbCheckers"
@@ -92,6 +92,34 @@
             android:layout_height="wrap_content"
             android:onClick="selectGame"
             android:text="Reversi" />
+
+        <RadioButton
+            android:id="@+id/rbChess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="selectGame"
+            android:text="Chess" />
     </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvEval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/tvStatus"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvEval"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

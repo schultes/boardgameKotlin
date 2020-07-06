@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
 import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.checkers.CheckersGameLogic
+import de.thm.mow.boardgame.model.chess.ChessGameLogic
 import de.thm.mow.boardgame.model.reversi.ReversiGameLogic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     cell.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
                 }
-                cell.setPadding(-45); cell.includeFontPadding = false
+                cell.setPadding(-35); cell.includeFontPadding = false
                 cell.tag = Coords(x, y)
                 cell.setOnClickListener(this)
             }
@@ -53,7 +54,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
         refreshUI()
         if (!game.isCurrentPlayerWhite) {
             GlobalScope.launch(Dispatchers.Main) {
+                val timestamp = System.nanoTime()
                 withContext(Dispatchers.Default) {game.aiMove()}
+                findViewById<TextView>(R.id.tvTime).text = "${(System.nanoTime() - timestamp) / 1_000_000} ms"
                 refreshUI()
             }
         }
@@ -65,9 +68,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
     }
 
     fun selectGame(v: View?) {
-        game = if (v?.id == R.id.rbCheckers) GenericGame(CheckersGameLogic()) else GenericGame(
-            ReversiGameLogic()
-        )
+        when (v?.id) {
+            R.id.rbCheckers -> game = GenericGame(CheckersGameLogic())
+            R.id.rbReversi -> game = GenericGame(ReversiGameLogic())
+            R.id.rbChess -> game = GenericGame(ChessGameLogic())
+        }
         refreshUI()
     }
 
@@ -92,6 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
             status = if (game.isCurrentPlayerWhite) "White's turn" else "Black's turn"
         }
         findViewById<TextView>(R.id.tvStatus).text = status
+        findViewById<TextView>(R.id.tvEval).text = "" + game.evaluation
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

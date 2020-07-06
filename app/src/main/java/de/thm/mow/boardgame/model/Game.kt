@@ -5,6 +5,7 @@ import de.thm.mow.boardgame.model.support.*
 interface Game {
     val isCurrentPlayerWhite: Boolean
     val result: GameResult
+    val evaluation: Double
     fun getFieldAsString(@argLabel("atCoords") coords: Coords) : String
     fun getCurrentTargets() : MutableList<Coords>
     fun restart()
@@ -33,6 +34,9 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
         get() {
             return logic.getResult(currentBoard, currentPlayer)
         }
+
+    override val evaluation: Double
+        get() = logic.evaluateBoard(currentBoard)
 
     override fun getFieldAsString(@argLabel("atCoords") coords: Coords) : String {
         val piece = currentBoard[coords.x, coords.y]

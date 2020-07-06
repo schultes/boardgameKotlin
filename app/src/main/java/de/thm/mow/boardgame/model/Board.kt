@@ -25,6 +25,10 @@ class Board<P> {
         return (row * columns) + column
     }
 
+    operator fun get(coords: Coords) : P {
+        return get(coords.x, coords.y)
+    }
+
     operator fun get(column: Int, row: Int) : P {
         if ((!indexIsValidFor(row, column))) {
             return invalid
