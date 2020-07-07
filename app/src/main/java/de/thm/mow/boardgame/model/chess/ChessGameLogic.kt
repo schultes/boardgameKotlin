@@ -166,14 +166,10 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         return allMoves
     }
 
-    override fun evaluateBoard(board: Board<ChessPiece>): Double {
+    override fun evaluateBoard(board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): Double {
         var value = 0.0
-        for (p in arrayOf(Player.white, Player.black)) {
-            val sign = if (p == Player.white) +1 else -1
-            if (isInCheck(board, p) && getMoves(board, p).isEmpty()) value -= sign * 100.0
-        }
+        if (isInCheck(board, player) && getMoves(board, player).isEmpty()) value -= player.sign * 100.0
         value += (board as ChessBoard).evaluation
-
         return value
     }
 

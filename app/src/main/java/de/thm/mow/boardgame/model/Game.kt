@@ -36,7 +36,7 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
         }
 
     override val evaluation: Double
-        get() = logic.evaluateBoard(currentBoard)
+        get() = logic.evaluateBoard(currentBoard, currentPlayer)
 
     override fun getFieldAsString(@argLabel("atCoords") coords: Coords) : String {
         val piece = currentBoard[coords.x, coords.y]
@@ -76,7 +76,7 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
                         currentMoves = null
                         currentStepIndex = 0
                         currentPlayer = currentPlayer.opponent
-                        println(logic.evaluateBoard(currentBoard))
+                        println(logic.evaluateBoard(currentBoard, currentPlayer))
                     } else {
                         val remainingMoves = mutableListOf<Move<P>>()
                         for (m in currentMoves!!) {
@@ -122,8 +122,8 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
             currentBoard.applyChanges(step.effects)
         }
 
-        println(logic.evaluateBoard(currentBoard))
         currentPlayer = currentPlayer.opponent
+        println(logic.evaluateBoard(currentBoard, currentPlayer))
         return true
     }
 

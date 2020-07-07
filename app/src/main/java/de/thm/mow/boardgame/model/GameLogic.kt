@@ -8,6 +8,6 @@ interface GameLogic<P> {
     fun getInitialBoard() : Board<P>
     fun getMoves(@argLabel("onBoard") board: Board<P>, forPlayer: Player, forSourceCoords: Coords) : MutableList<Move<P>>
     fun getMoves(@argLabel("onBoard") board: Board<P>, @argLabel("forPlayer") player: Player) : MutableList<Move<P>>
-    fun evaluateBoard(@argLabel("_") board: Board<P>) : Double
+    fun evaluateBoard(@argLabel("_") board: Board<P>, @argLabel("forPlayer") player: Player) : Double
     fun getResult(@argLabel("onBoard") board: Board<P>, forPlayer: Player) : GameResult
 }

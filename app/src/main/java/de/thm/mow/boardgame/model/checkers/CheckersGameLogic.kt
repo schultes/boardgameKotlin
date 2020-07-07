@@ -140,7 +140,7 @@ class CheckersGameLogic : GameLogic<CheckersPiece> {
         return sourcePiece
     }
 
-    override fun evaluateBoard(@argLabel("_") board: Board<CheckersPiece>) : Double {
+    override fun evaluateBoard(@argLabel("_") board: Board<CheckersPiece>, @argLabel("forPlayer") player: Player) : Double {
         var result = 0.0
         for (x in 0 until board.columns) {
             for (y in 0 until board.rows) {

@@ -22,7 +22,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
                 val nextMove = getNextMove(newBoard, player.opponent, !maximizingValue, depth - 1)
                 move.value = nextMove.value!!
             } else {
-                move.value = logic.evaluateBoard(newBoard)
+                move.value = logic.evaluateBoard(newBoard, player.opponent)
             }
 
             if (depth == maxSearchDepth) {
@@ -36,7 +36,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
 
         if ((bestMove == null)) {
             // return empty dummy move if there is no real move
-            bestMove = Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board))
+            bestMove = Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board, player.opponent))
         }
 
         assert(bestMove!!.value != null)

@@ -69,7 +69,7 @@ class ReversiGameLogic : GameLogic<ReversiPiece> {
         return result
     }
 
-    override fun evaluateBoard(@argLabel("_") board: Board<ReversiPiece>) : Double {
+    override fun evaluateBoard(@argLabel("_") board: Board<ReversiPiece>, @argLabel("forPlayer") player: Player) : Double {
         var result = 0.0
         for (x in 0 until board.columns) {
             for (y in 0 until board.rows) {
@@ -86,7 +86,7 @@ class ReversiGameLogic : GameLogic<ReversiPiece> {
         return result
     }
 
-    override fun getResult(@argLabel("onBoard") board: Board<ReversiPiece>, @argLabel("forPlayer") Ꮻ_: Player) : GameResult {
+    override fun getResult(@argLabel("onBoard") board: Board<ReversiPiece>, @argLabel("forPlayer") player: Player) : GameResult {
         var finished = true
         var winner: Player? = null
         val movesOfBothPlayers = arrayOf(getMoves(board, Player.white), getMoves(board, Player.black))
@@ -97,11 +97,11 @@ class ReversiGameLogic : GameLogic<ReversiPiece> {
         }
 
         if ((finished)) {
-            if ((evaluateBoard(board) > 0)) {
+            if ((evaluateBoard(board, player) > 0)) {
                 winner = Player.white
             }
 
-            if ((evaluateBoard(board) < 0)) {
+            if ((evaluateBoard(board, player) < 0)) {
                 winner = Player.black
             }
         }
