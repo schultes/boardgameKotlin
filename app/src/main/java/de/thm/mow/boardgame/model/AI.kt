@@ -36,7 +36,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
 
         if ((bestMove == null)) {
             // return empty dummy move if there is no real move
-            bestMove = Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board, player.opponent))
+            bestMove = Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board, player))
         }
 
         assert(bestMove!!.value != null)
