@@ -13,7 +13,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
         val allMoves = logic.getMoves(board, player)
         for (i in 0 until allMoves.size) {
             var move = allMoves[i]
-            val newBoard = Board<P>(board)
+            val newBoard = board.clone()
             for (step in move.steps) {
                 newBoard.applyChanges(step.effects)
             }

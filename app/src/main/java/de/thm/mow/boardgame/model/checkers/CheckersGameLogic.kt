@@ -108,7 +108,7 @@ class CheckersGameLogic : GameLogic<CheckersPiece> {
                                 // promotion took place (man -> king): stop recursion!
                                 result.add(thisSteps)
                             } else {
-                                val newBoard = Board<CheckersPiece>(board)
+                                val newBoard = board.clone()
                                 newBoard.applyChanges(effects)
                                 val arrayOfSubsequentSteps = recursiveCapture(newBoard, player, t2c, range, yDirections)
                                 if (arrayOfSubsequentSteps.isEmpty()) {

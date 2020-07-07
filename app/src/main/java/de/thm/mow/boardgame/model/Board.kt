@@ -2,19 +2,14 @@ package de.thm.mow.boardgame.model
 
 import de.thm.mow.boardgame.model.support.*
 
-class Board<P> {
+open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     val columns = 8
     val rows = 8
-    var pieces: MutableList<P>
-    val invalid: P
-    constructor(empty: P, invalid: P) {
-        pieces = MutableList<P>(empty, columns * rows)
-        this.invalid = invalid
-    }
 
-    constructor(board: Board<P>) {
-        pieces = board.pieces.copy()
-        invalid = board.invalid
+    constructor(empty: P, invalid: P) : this(invalid, MutableList<P>(empty, 64))
+
+    open fun clone() : Board<P> {
+        return Board<P>(invalid, pieces.copy())
     }
 
     private fun indexIsValidFor(row: Int, column: Int) : Boolean {
@@ -37,14 +32,18 @@ class Board<P> {
         return pieces[indexFor(row, column)]
     }
 
+    operator fun set(coords: Coords, newValue: P) {
+        pieces[indexFor(coords.y, coords.x)] = newValue
+    }
+
     operator fun set(column: Int, row: Int, newValue: P) {
         assert(indexIsValidFor(row, column), "Index out of range")
         pieces[indexFor(row, column)] = newValue
     }
 
-    fun applyChanges(@argLabel("_") changes: MutableList<Effect<P>>) {
+    open fun applyChanges(@argLabel("_") changes: MutableList<Effect<P>>) {
         for (change in changes) {
-            this[change.coords.x, change.coords.y] = change.newPiece
+            this[change.coords] = change.newPiece
         }
     }
 }

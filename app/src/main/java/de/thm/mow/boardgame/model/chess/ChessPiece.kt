@@ -19,27 +19,27 @@ enum class ChessPiece(val rawValue: String) {
     WhiteKing("♔"),
     BlackKing("♚");
     companion object {
-        fun getPawn(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun pawn(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhitePawn else BlackPawn
         }
 
-        fun getKnight(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun knight(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteKnight else BlackKnight
         }
 
-        fun getBishop(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun bishop(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteBishop else BlackBishop
         }
 
-        fun getRook(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun rook(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteRook else BlackRook
         }
 
-        fun getQueen(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun queen(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteQueen else BlackQueen
         }
 
-        fun getKing(@argLabel("forPlayer") player: Player) : ChessPiece {
+        fun king(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteKing else BlackKing
         }
     }
@@ -59,4 +59,27 @@ enum class ChessPiece(val rawValue: String) {
 
         return false
     }
+
+    val player: Player?
+        get() {
+            if (belongs(Player.white)) return Player.white
+            if (belongs(Player.black)) return Player.black
+            return null
+        }
+
+    val value: Double
+        get() {
+            player?.let { p ->
+                val sign = p.sign
+                when (this) {
+                    pawn(p) -> return sign * 1.0
+                    knight(p) -> return sign * 3.0
+                    bishop(p) -> return sign * 3.0
+                    rook(p) -> return sign * 5.0
+                    queen(p) -> return sign * 9.0
+                    else -> return 0.0
+                }
+            }
+            return 0.0
+        }
 }
