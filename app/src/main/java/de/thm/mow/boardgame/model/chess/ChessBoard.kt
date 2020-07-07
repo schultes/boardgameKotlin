@@ -15,7 +15,9 @@ class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, 
         val lastChange = changes.last()
         val p = lastChange.newPiece.player!!
         val oldPiece = this[lastChange.coords]
-        if (oldPiece.belongs(p.opponent)) evaluation -= oldPiece.value
+        if (oldPiece.belongs(p.opponent)) {
+            evaluation -= oldPiece.value
+        }
         if (lastChange.newPiece == ChessPiece.queen(p) && this[changes.first().coords] == ChessPiece.pawn(p)) {
             evaluation += ChessPiece.queen(p).value - ChessPiece.pawn(p).value // promotion
         }
