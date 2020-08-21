@@ -21,7 +21,7 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     }
 
     operator fun get(coords: Coords) : P {
-        return get(coords.x, coords.y)
+        return this[coords.x, coords.y]
     }
 
     operator fun get(column: Int, row: Int) : P {
@@ -33,7 +33,7 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     }
 
     operator fun set(coords: Coords, newValue: P) {
-        pieces[indexFor(coords.y, coords.x)] = newValue
+        this[coords.x, coords.y] = newValue
     }
 
     operator fun set(column: Int, row: Int, newValue: P) {
