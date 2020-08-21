@@ -72,11 +72,11 @@ enum class ChessPiece(val rawValue: String) {
             player?.let { p ->
                 val sign = p.sign
                 when (this) {
-                    pawn(p) -> return sign * 1.0
-                    knight(p) -> return sign * 3.0
-                    bishop(p) -> return sign * 3.0
-                    rook(p) -> return sign * 5.0
-                    queen(p) -> return sign * 9.0
+                    ChessPiece.pawn(p) -> return sign * 1.0
+                    ChessPiece.knight(p) -> return sign * 3.0
+                    ChessPiece.bishop(p) -> return sign * 3.0
+                    ChessPiece.rook(p) -> return sign * 5.0
+                    ChessPiece.queen(p) -> return sign * 9.0
                     else -> return 0.0
                 }
             }

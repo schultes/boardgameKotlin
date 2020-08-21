@@ -5,7 +5,7 @@ enum class Player {
     val opponent: Player
         get() = if (this == white) black else white
 
-    val sign: Int
-        get() = if (this == white) +1 else -1
+    val sign: Double
+        get() = if (this == white) +1.0 else -1.0
 
 }
