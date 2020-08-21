@@ -29,8 +29,8 @@ class ChessGameLogic : GameLogic<ChessPiece> {
             }
         }
 
-        for (y in -1..+1) {
-            for (x in -1..+1) {
+        for (y in -1..1) {
+            for (x in -1..1) {
                 if (x == 0 && y == 0) continue
                 val isStraight = x == 0 || y == 0
                 val isDiagonal = !isStraight
@@ -104,8 +104,8 @@ class ChessGameLogic : GameLogic<ChessPiece> {
             val maxDistance = if (srcPiece == ChessPiece.king(player)) 1 else 7
             val straight = if (srcPiece == ChessPiece.bishop(player)) false else true
             val diagonal = if (srcPiece == ChessPiece.rook(player)) false else true
-            for (y in -1..+1) {
-                for (x in -1..+1) {
+            for (y in -1..1) {
+                for (x in -1..1) {
                     if (x == 0 && y == 0) continue
                     if (!straight && (x == 0 || y == 0)) continue
                     if (!diagonal && x != 0 && y != 0) continue
