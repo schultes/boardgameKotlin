@@ -168,7 +168,10 @@ class ChessGameLogic : GameLogic<ChessPiece> {
 
     override fun evaluateBoard(board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): Double {
         var value = 0.0
-        if (isInCheck(board, player) && getMoves(board, player).isEmpty()) value -= player.sign * 100.0
+        if (isInCheck(board, player) && getMoves(board, player).isEmpty()) {
+            value -= player.sign * 100.0
+        }
+
         value += (board as ChessBoard).evaluation
         return value
     }
