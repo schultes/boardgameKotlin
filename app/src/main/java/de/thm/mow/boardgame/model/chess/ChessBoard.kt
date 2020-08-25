@@ -11,7 +11,7 @@ class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, 
         return ChessBoard(pieces.copy(), evaluation, whiteKing, blackKing)
     }
 
-    override fun applyChanges(changes: MutableList<Effect<ChessPiece>>) {
+    override fun applyChanges(@argLabel("_") changes: MutableList<Effect<ChessPiece>>) {
         val lastChange = changes.last()
         val p = lastChange.newPiece.player!!
         val oldPiece = this[lastChange.coords]
