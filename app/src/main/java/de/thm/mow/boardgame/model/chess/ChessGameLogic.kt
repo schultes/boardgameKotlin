@@ -140,7 +140,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
     }
 
     private fun addMove(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords, deltaX: Int, deltaY: Int, moveAllowed: Boolean = true, captureAllowed: Boolean = true) {
-        val tc = Coords(sc.x + deltaX, sc.y + deltaY)
+        val tc: Coords = Coords(sc.x + deltaX, sc.y + deltaY)
         if (moveAllowed && board[tc.x, tc.y] == ChessPiece.Empty || captureAllowed && board[tc.x, tc.y].belongs(player.opponent)) {
             var targetPiece = board[sc.x, sc.y]
             if (targetPiece == ChessPiece.pawn(player) && tc.y == firstRank(player.opponent)) {
