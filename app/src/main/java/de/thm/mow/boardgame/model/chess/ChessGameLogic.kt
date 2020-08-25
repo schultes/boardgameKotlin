@@ -156,7 +156,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         }
     }
 
-    override fun getMoves(board: Board<ChessPiece>, player: Player): MutableList<Move<ChessPiece>> {
+    override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): MutableList<Move<ChessPiece>> {
         val allMoves = mutableListOf<Move<ChessPiece>>()
         for (x in 0..7) {
             for (y in 0..7) {
@@ -166,7 +166,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         return allMoves
     }
 
-    override fun evaluateBoard(board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): Double {
+    override fun evaluateBoard(@argLabel("_") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): Double {
         var value = 0.0
         if (isInCheck(board, player) && getMoves(board, player).isEmpty()) {
             value -= player.sign * 100.0
