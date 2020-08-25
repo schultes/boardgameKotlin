@@ -122,9 +122,9 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         if (srcPiece == ChessPiece.king(player) && !isInCheck(board, player)) {
             for (x in intArrayOf(-1, +1)) {
                 val queenside = x == -1
-                val rookTarget = Coords(sc.x + 1 * x, sc.y)
-                val kingTarget = Coords(sc.x + 2 * x, sc.y)
-                val rookSource = if (queenside) Coords(sc.x + 4 * x, sc.y) else Coords(sc.x + 3 * x, sc.y)
+                val rookTarget: Coords = Coords(sc.x + 1 * x, sc.y)
+                val kingTarget: Coords = Coords(sc.x + 2 * x, sc.y)
+                val rookSource: Coords = if (queenside) Coords(sc.x + 4 * x, sc.y) else Coords(sc.x + 3 * x, sc.y)
                 var allowed = true
                 for (c in arrayOf(rookTarget, kingTarget)) {
                     if (board[c] != ChessPiece.Empty || isThreatened(board, player, c)) allowed = false
