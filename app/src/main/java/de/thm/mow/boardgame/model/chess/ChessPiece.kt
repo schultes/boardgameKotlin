@@ -62,8 +62,14 @@ enum class ChessPiece(val rawValue: String) {
 
     val player: Player?
         get() {
-            if (belongs(Player.white)) return Player.white
-            if (belongs(Player.black)) return Player.black
+            if (belongs(Player.white)) {
+                return Player.white
+            }
+
+            if (belongs(Player.black)) {
+                return Player.black
+            }
+
             return null
         }
 
@@ -80,6 +86,7 @@ enum class ChessPiece(val rawValue: String) {
                     else -> return 0.0
                 }
             }
+
             return 0.0
         }
 }

@@ -19,28 +19,49 @@ class ChessGameLogic : GameLogic<ChessPiece> {
     private fun isThreatened(board: Board<ChessPiece>, player: Player, c: Coords) : Boolean {
         val yDir = if (player == Player.white) -1 else +1
         for (x in intArrayOf(-1, +1)) {
-            if (board[c.x + x, c.y + yDir] == ChessPiece.pawn(player.opponent)) return true
+            if (board[c.x + x, c.y + yDir] == ChessPiece.pawn(player.opponent)) {
+                return true
+            }
         }
 
         for (y in intArrayOf(-2, -1, +1, +2)) {
             for (x in intArrayOf(-1, +1)) {
                 val xFactor = if (y == 2 || y == -2) 1 else 2
-                if (board[c.x + x * xFactor, c.y + y] == ChessPiece.knight(player.opponent)) return true
+                if (board[c.x + x * xFactor, c.y + y] == ChessPiece.knight(player.opponent)) {
+                    return true
+                }
             }
         }
 
         for (y in -1..1) {
             for (x in -1..1) {
-                if (x == 0 && y == 0) continue
+                if (x == 0 && y == 0) {
+                    continue
+                }
+
                 val isStraight = x == 0 || y == 0
                 val isDiagonal = !isStraight
                 for (d in 1..7) {
                     val currentPiece = board[c.x + x * d, c.y + y * d]
-                    if (currentPiece == ChessPiece.king(player.opponent) && d == 1) return true
-                    if (currentPiece == ChessPiece.queen(player.opponent)) return true
-                    if (currentPiece == ChessPiece.rook(player.opponent) && isStraight) return true
-                    if (currentPiece == ChessPiece.bishop(player.opponent) && isDiagonal) return true
-                    if (currentPiece != ChessPiece.Empty) break
+                    if (currentPiece == ChessPiece.king(player.opponent) && d == 1) {
+                        return true
+                    }
+
+                    if (currentPiece == ChessPiece.queen(player.opponent)) {
+                        return true
+                    }
+
+                    if (currentPiece == ChessPiece.rook(player.opponent) && isStraight) {
+                        return true
+                    }
+
+                    if (currentPiece == ChessPiece.bishop(player.opponent) && isDiagonal) {
+                        return true
+                    }
+
+                    if (currentPiece != ChessPiece.Empty) {
+                        break
+                    }
                 }
             }
         }
@@ -52,7 +73,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         return isThreatened(board, player, kingCoords(board, player))
     }
 
-    override fun getInitialBoard(): Board<ChessPiece> {
+    override fun getInitialBoard() : Board<ChessPiece> {
         val board = ChessBoard()
         for (p in arrayOf(Player.white, Player.black)) {
             var rank = firstRank(p)
@@ -64,14 +85,16 @@ class ChessGameLogic : GameLogic<ChessPiece> {
             board[5, rank] = ChessPiece.bishop(p)
             board[6, rank] = ChessPiece.knight(p)
             board[7, rank] = ChessPiece.rook(p)
-
             rank = secondRank(p)
-            for (x in 0..7) board[x, rank] = ChessPiece.pawn(p)
+            for (x in 0..7) {
+                board[x, rank] = ChessPiece.pawn(p)
+            }
         }
+
         return board
     }
 
-    override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player, @argLabel("forSourceCoords") sc: Coords): MutableList<Move<ChessPiece>> {
+    override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player, @argLabel("forSourceCoords") sc: Coords) : MutableList<Move<ChessPiece>> {
         val moves = mutableListOf<Move<ChessPiece>>()
         addMoves(moves, board, player, sc)
         return moves
@@ -79,12 +102,12 @@ class ChessGameLogic : GameLogic<ChessPiece> {
 
     private fun addMoves(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords) {
         val srcPiece = board[sc.x, sc.y]
-
         if (srcPiece == ChessPiece.pawn(player)) {
             val yDir = if (player == Player.white) -1 else +1
             if (sc.y == secondRank(player) && board[sc.x, sc.y + yDir] == ChessPiece.Empty) {
                 addMove(moves, board, player, sc, 0, 2 * yDir, true, false)
             }
+
             addMove(moves, board, player, sc, 0, yDir, true, false)
             for (x in intArrayOf(-1, +1)) {
                 addMove(moves, board, player, sc, x, yDir, false, true)
@@ -106,12 +129,23 @@ class ChessGameLogic : GameLogic<ChessPiece> {
             val diagonal = if (srcPiece == ChessPiece.rook(player)) false else true
             for (y in -1..1) {
                 for (x in -1..1) {
-                    if (x == 0 && y == 0) continue
-                    if (!straight && (x == 0 || y == 0)) continue
-                    if (!diagonal && x != 0 && y != 0) continue
+                    if (x == 0 && y == 0) {
+                        continue
+                    }
+
+                    if (!straight && (x == 0 || y == 0)) {
+                        continue
+                    }
+
+                    if (!diagonal && x != 0 && y != 0) {
+                        continue
+                    }
+
                     for (d in 1..maxDistance) {
                         addMove(moves, board, player, sc, x * d, y * d)
-                        if (board[sc.x + x * d, sc.y + y * d] != ChessPiece.Empty) break
+                        if (board[sc.x + x * d, sc.y + y * d] != ChessPiece.Empty) {
+                            break
+                        }
                     }
                 }
             }
@@ -127,10 +161,19 @@ class ChessGameLogic : GameLogic<ChessPiece> {
                 val rookSource: Coords = if (queenside) Coords(sc.x + 4 * x, sc.y) else Coords(sc.x + 3 * x, sc.y)
                 var allowed = true
                 for (c in arrayOf(rookTarget, kingTarget)) {
-                    if (board[c] != ChessPiece.Empty || isThreatened(board, player, c)) allowed = false
+                    if (board[c] != ChessPiece.Empty || isThreatened(board, player, c)) {
+                        allowed = false
+                    }
                 }
-                if (board[rookSource] != ChessPiece.rook(player)) allowed = false
-                if (queenside && board[sc.x - 3, sc.y] != ChessPiece.Empty) allowed = false
+
+                if (board[rookSource] != ChessPiece.rook(player)) {
+                    allowed = false
+                }
+
+                if (queenside && board[sc.x - 3, sc.y] != ChessPiece.Empty) {
+                    allowed = false
+                }
+
                 if (allowed) {
                     val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(rookTarget, ChessPiece.rook(player)), Effect(rookSource, ChessPiece.Empty), Effect(kingTarget, ChessPiece.king(player)))
                     moves += Move<ChessPiece>(sc, mutableListOf(Step(kingTarget, effects)), null)
@@ -146,6 +189,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
             if (targetPiece == ChessPiece.pawn(player) && tc.y == firstRank(player.opponent)) {
                 targetPiece = ChessPiece.queen(player) // promotion
             }
+
             val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(tc, targetPiece))
             val newMove = Move<ChessPiece>(sc, mutableListOf(Step(tc, effects)), null)
             val newBoard = board.clone()
@@ -156,17 +200,18 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         }
     }
 
-    override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): MutableList<Move<ChessPiece>> {
+    override fun getMoves(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player) : MutableList<Move<ChessPiece>> {
         val allMoves = mutableListOf<Move<ChessPiece>>()
         for (x in 0..7) {
             for (y in 0..7) {
                 addMoves(allMoves, board, player, Coords(x, y))
             }
         }
+
         return allMoves
     }
 
-    override fun evaluateBoard(@argLabel("_") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): Double {
+    override fun evaluateBoard(@argLabel("_") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player) : Double {
         var value = 0.0
         if (isInCheck(board, player) && getMoves(board, player).isEmpty()) {
             value -= player.sign * 100.0
@@ -176,7 +221,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         return value
     }
 
-    override fun getResult(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player): GameResult {
+    override fun getResult(@argLabel("onBoard") board: Board<ChessPiece>, @argLabel("forPlayer") player: Player) : GameResult {
         var finished = false
         var winner: Player? = null
         if (getMoves(board, player).isEmpty()) {

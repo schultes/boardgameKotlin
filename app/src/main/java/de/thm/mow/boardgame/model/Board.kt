@@ -5,9 +5,7 @@ import de.thm.mow.boardgame.model.support.*
 open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     val columns = 8
     val rows = 8
-
     constructor(empty: P, invalid: P) : this(invalid, MutableList<P>(empty, 64))
-
     open fun clone() : Board<P> {
         return Board<P>(invalid, pieces.copy())
     }
@@ -24,16 +22,16 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
         return this[coords.x, coords.y]
     }
 
+    operator fun set(coords: Coords, newValue: P) {
+        this[coords.x, coords.y] = newValue
+    }
+
     operator fun get(column: Int, row: Int) : P {
         if ((!indexIsValidFor(row, column))) {
             return invalid
         }
 
         return pieces[indexFor(row, column)]
-    }
-
-    operator fun set(coords: Coords, newValue: P) {
-        this[coords.x, coords.y] = newValue
     }
 
     operator fun set(column: Int, row: Int, newValue: P) {
