@@ -3,30 +3,50 @@ package de.thm.mow.boardgame.model.chess
 import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.support.*
 
-class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, var whiteKing: Coords = Coords(4, 7), var blackKing: Coords = Coords(4, 0)) : Board<ChessPiece>(ChessPiece.Invalid, pieces) {
+class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, var whiteKing: Coords = Coords(4, 7), var blackKing: Coords = Coords(4, 0), var twoStepsPawn: Coords? = null) : Board<ChessPiece>(ChessPiece.Invalid, pieces) {
     constructor() : this(MutableList<ChessPiece>(ChessPiece.Empty, 64))
     override fun clone() : Board<ChessPiece> {
-        return ChessBoard(pieces.copy(), evaluation, whiteKing, blackKing)
+        return ChessBoard(pieces.copy(), evaluation, whiteKing, blackKing, twoStepsPawn)
+    }
+
+    companion object {
+        fun yIndex(@argLabel("ofRank") rank: Int, @argLabel("forPlayer") player: Player) : Int {
+            return if (player == Player.white) 8 - rank else -1 + rank
+        }
     }
 
     override fun applyChanges(@argLabel("_") changes: MutableList<Effect<ChessPiece>>) {
-        val lastChange = changes.last()
-        val p = lastChange.newPiece.player!!
-        val oldPiece = this[lastChange.coords]
+        // changes.size == 2 -> normal move or capture (incl. promotion); == 3 -> en passant; == 4 -> castling
+        val source = changes.first()
+        var target = changes.last()
+        val capturedOpponent = changes.last()
+        if (changes.size == 3) {
+            // en passant
+            target = changes[1]
+        }
+
+        val p = target.newPiece.player!!
+        val oldPiece = this[capturedOpponent.coords]
         if (oldPiece.belongs(p.opponent)) {
             evaluation -= oldPiece.value
         }
 
-        if (lastChange.newPiece == ChessPiece.queen(p) && this[changes.first().coords] == ChessPiece.pawn(p)) {
+        if (target.newPiece == ChessPiece.queen(p) && this[source.coords] == ChessPiece.pawn(p)) {
             evaluation += ChessPiece.queen(p).value - ChessPiece.pawn(p).value // promotion
         }
 
-        if (lastChange.newPiece == ChessPiece.king(p)) {
+        if (target.newPiece == ChessPiece.king(p)) {
             if (p == Player.white) {
-                whiteKing = lastChange.coords
+                whiteKing = target.coords
             } else {
-                blackKing = lastChange.coords
+                blackKing = target.coords
             }
+        }
+
+        if (target.newPiece == ChessPiece.pawn(p) && target.coords.y == yIndex(4, p) && source.coords.y == yIndex(2, p)) {
+            twoStepsPawn = target.coords
+        } else {
+            twoStepsPawn = null
         }
 
         super.applyChanges(changes)

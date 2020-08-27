@@ -2,16 +2,9 @@ package de.thm.mow.boardgame.model.chess
 
 import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.support.*
+import java.lang.Math.abs
 
 class ChessGameLogic : GameLogic<ChessPiece> {
-    private fun firstRank(@argLabel("forPlayer") player: Player) : Int {
-        return if (player == Player.white) 7 else 0
-    }
-
-    private fun secondRank(@argLabel("forPlayer") player: Player) : Int {
-        return if (player == Player.white) 6 else 1
-    }
-
     private fun kingCoords(board: Board<ChessPiece>, player: Player) : Coords {
         return if (player == Player.white) (board as ChessBoard).whiteKing else (board as ChessBoard).blackKing
     }
@@ -76,18 +69,18 @@ class ChessGameLogic : GameLogic<ChessPiece> {
     override fun getInitialBoard() : Board<ChessPiece> {
         val board = ChessBoard()
         for (p in arrayOf(Player.white, Player.black)) {
-            var rank = firstRank(p)
-            board[0, rank] = ChessPiece.rook(p)
-            board[1, rank] = ChessPiece.knight(p)
-            board[2, rank] = ChessPiece.bishop(p)
-            board[3, rank] = ChessPiece.queen(p)
-            board[4, rank] = ChessPiece.king(p)
-            board[5, rank] = ChessPiece.bishop(p)
-            board[6, rank] = ChessPiece.knight(p)
-            board[7, rank] = ChessPiece.rook(p)
-            rank = secondRank(p)
+            var y = ChessBoard.yIndex(1, p)
+            board[0, y] = ChessPiece.rook(p)
+            board[1, y] = ChessPiece.knight(p)
+            board[2, y] = ChessPiece.bishop(p)
+            board[3, y] = ChessPiece.queen(p)
+            board[4, y] = ChessPiece.king(p)
+            board[5, y] = ChessPiece.bishop(p)
+            board[6, y] = ChessPiece.knight(p)
+            board[7, y] = ChessPiece.rook(p)
+            y = ChessBoard.yIndex(2, p)
             for (x in 0..7) {
-                board[x, rank] = ChessPiece.pawn(p)
+                board[x, y] = ChessPiece.pawn(p)
             }
         }
 
@@ -104,13 +97,22 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         val srcPiece = board[sc.x, sc.y]
         if (srcPiece == ChessPiece.pawn(player)) {
             val yDir = if (player == Player.white) -1 else +1
-            if (sc.y == secondRank(player) && board[sc.x, sc.y + yDir] == ChessPiece.Empty) {
+            if (sc.y == ChessBoard.yIndex(2, player) && board[sc.x, sc.y + yDir] == ChessPiece.Empty) {
                 addMove(moves, board, player, sc, 0, 2 * yDir, true, false)
             }
 
             addMove(moves, board, player, sc, 0, yDir, true, false)
             for (x in intArrayOf(-1, +1)) {
                 addMove(moves, board, player, sc, x, yDir, false, true)
+            }
+
+            // en passant
+            (board as ChessBoard).twoStepsPawn?.let { opponentPawn ->
+                if (abs(sc.x - opponentPawn.x) == 1 && sc.y == opponentPawn.y) {
+                    val tc = Coords(opponentPawn.x, sc.y + yDir)
+                    val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(tc, srcPiece), Effect(opponentPawn, ChessPiece.Empty))
+                    addMove(moves, board, player, sc, tc, effects)
+                }
             }
         }
 
@@ -186,17 +188,21 @@ class ChessGameLogic : GameLogic<ChessPiece> {
         val tc: Coords = Coords(sc.x + deltaX, sc.y + deltaY)
         if (moveAllowed && board[tc.x, tc.y] == ChessPiece.Empty || captureAllowed && board[tc.x, tc.y].belongs(player.opponent)) {
             var targetPiece = board[sc.x, sc.y]
-            if (targetPiece == ChessPiece.pawn(player) && tc.y == firstRank(player.opponent)) {
+            if (targetPiece == ChessPiece.pawn(player) && tc.y == ChessBoard.yIndex(1, player.opponent)) {
                 targetPiece = ChessPiece.queen(player) // promotion
             }
 
             val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(tc, targetPiece))
-            val newMove = Move<ChessPiece>(sc, mutableListOf(Step(tc, effects)), null)
-            val newBoard = board.clone()
-            newBoard.applyChanges(effects)
-            if (!isInCheck(newBoard, player)) {
-                moves += newMove
-            }
+            addMove(moves, board, player, sc, tc, effects)
+        }
+    }
+
+    private fun addMove(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords, tc: Coords, effects: MutableList<Effect<ChessPiece>>) {
+        val newMove = Move<ChessPiece>(sc, mutableListOf(Step(tc, effects)), null)
+        val newBoard = board.clone()
+        newBoard.applyChanges(effects)
+        if (!isInCheck(newBoard, player)) {
+            moves += newMove
         }
     }
 
