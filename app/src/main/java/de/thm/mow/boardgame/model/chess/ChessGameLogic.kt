@@ -2,7 +2,6 @@ package de.thm.mow.boardgame.model.chess
 
 import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.support.*
-import java.lang.Math.abs
 
 class ChessGameLogic : GameLogic<ChessPiece> {
     private fun kingCoords(board: Board<ChessPiece>, player: Player) : Coords {
@@ -108,7 +107,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
 
             // en passant
             (board as ChessBoard).twoStepsPawn?.let { opponentPawn ->
-                if (abs(sc.x - opponentPawn.x) == 1 && sc.y == opponentPawn.y) {
+                if ((sc.x - opponentPawn.x).absoluteValue == 1 && sc.y == opponentPawn.y) {
                     val tc = Coords(opponentPawn.x, sc.y + yDir)
                     val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(tc, srcPiece), Effect(opponentPawn, ChessPiece.Empty))
                     addMove(moves, board, player, sc, tc, effects)

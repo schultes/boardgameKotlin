@@ -3,7 +3,6 @@ package de.thm.mow.boardgame.model.chess
 import de.thm.mow.boardgame.model.Coords
 import de.thm.mow.boardgame.model.Player
 import de.thm.mow.boardgame.model.support.*
-import java.lang.Math.abs
 
 enum class ChessPiece(val rawValue: String) {
     Empty("  "),
@@ -48,7 +47,7 @@ enum class ChessPiece(val rawValue: String) {
         fun pawnValue(@argLabel("at") c: Coords, @argLabel("forPlayer") p: Player) : Double {
             val borderRankValues = doubleArrayOf(0.0, -0.01, -0.05, 0.0, 0.1, 0.2)
             var result = 1.0
-            val yDelta = abs(c.y - ChessBoard.yIndex(2, p))
+            val yDelta = (c.y - ChessBoard.yIndex(2, p)).absoluteValue
             when (c.x) {
                 3, 4 -> result += yDelta * 0.08
                 else -> result += borderRankValues[yDelta]
@@ -80,8 +79,8 @@ enum class ChessPiece(val rawValue: String) {
 
         private fun centerPreferringValue(@argLabel("at") c: Coords, @argLabel("withWeight") w: Double) : Double {
             var result = 0.0
-            val xFromCenter = abs(3.5 - c.x) - 0.5
-            val yFromCenter = abs(3.5 - c.y) - 0.5
+            val xFromCenter = (3.5 - c.x).absoluteValue - 0.5
+            val yFromCenter = (3.5 - c.y).absoluteValue - 0.5
             result -= xFromCenter * w
             result -= yFromCenter * w
             return result

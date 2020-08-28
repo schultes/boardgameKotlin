@@ -1,7 +1,6 @@
 package de.thm.mow.boardgame.model
 
 import de.thm.mow.boardgame.model.support.*
-import kotlin.math.abs
 
 class AI<P, GL : GameLogic<P>>(val logic: GL) {
     var maxSearchDepth = 2
@@ -30,7 +29,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
                 println("depth: ${depth}, (${move.source}), best value: ${bestMoves.firstOrNull()?.value ?: 0}, size = ${bestMoves.size}, current value: ${move.value!!}")
             }
 
-            if (bestMoves.isEmpty() || abs(bestMoves.first().value!! - move.value!!) < 0.01) {
+            if (bestMoves.isEmpty() || (bestMoves.first().value!! - move.value!!).absoluteValue < 0.01) {
                 bestMoves.add(move)
             } else {
                 if ((move.value!! > bestMoves.first().value!!) == maximizingValue) {

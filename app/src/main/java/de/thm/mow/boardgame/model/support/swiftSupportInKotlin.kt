@@ -1,5 +1,7 @@
 package de.thm.mow.boardgame.model.support
 
+import kotlin.math.abs
+
 fun assert(value: Boolean, message: String) {
     assert(value) {message}
 }
@@ -28,6 +30,11 @@ fun Double(value: Int) : Double {
     return value.toDouble()
 }
 
+val Double.absoluteValue : Double
+    get() = abs(this)
+
+val Int.absoluteValue : Int
+    get() = abs(this)
 
 annotation class argLabel(val name: String)
 annotation class tuple
