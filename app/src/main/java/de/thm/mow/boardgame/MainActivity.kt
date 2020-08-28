@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
             status = if (game.isCurrentPlayerWhite) "White's turn" else "Black's turn"
         }
         findViewById<TextView>(R.id.tvStatus).text = status
-        findViewById<TextView>(R.id.tvEval).text = "" + game.evaluation
+        findViewById<TextView>(R.id.tvEval).text = "%.2f".format(game.evaluation)
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

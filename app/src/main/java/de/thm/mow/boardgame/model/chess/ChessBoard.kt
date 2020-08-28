@@ -25,17 +25,16 @@ class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, 
             target = changes[1]
         }
 
-        val p = target.newPiece.player!!
-        val oldPiece = this[capturedOpponent.coords]
-        if (oldPiece.belongs(p.opponent)) {
-            evaluation -= oldPiece.value
+        val sourcePiece = this[source.coords]
+        val targetPiece = target.newPiece
+        val capturedPiece = this[capturedOpponent.coords]
+        val p = targetPiece.player!!
+        if (capturedPiece.belongs(p.opponent)) {
+            evaluation -= capturedPiece.value(capturedOpponent.coords)
         }
 
-        if (target.newPiece == ChessPiece.queen(p) && this[source.coords] == ChessPiece.pawn(p)) {
-            evaluation += ChessPiece.queen(p).value - ChessPiece.pawn(p).value // promotion
-        }
-
-        if (target.newPiece == ChessPiece.king(p)) {
+        evaluation += targetPiece.value(target.coords) - sourcePiece.value(source.coords)
+        if (targetPiece == ChessPiece.king(p)) {
             if (p == Player.white) {
                 whiteKing = target.coords
             } else {
@@ -43,7 +42,7 @@ class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, 
             }
         }
 
-        if (target.newPiece == ChessPiece.pawn(p) && target.coords.y == yIndex(4, p) && source.coords.y == yIndex(2, p)) {
+        if (targetPiece == ChessPiece.pawn(p) && target.coords.y == yIndex(4, p) && source.coords.y == yIndex(2, p)) {
             twoStepsPawn = target.coords
         } else {
             twoStepsPawn = null

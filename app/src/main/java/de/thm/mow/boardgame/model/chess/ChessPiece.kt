@@ -1,7 +1,9 @@
 package de.thm.mow.boardgame.model.chess
 
+import de.thm.mow.boardgame.model.Coords
 import de.thm.mow.boardgame.model.Player
 import de.thm.mow.boardgame.model.support.*
+import java.lang.Math.abs
 
 enum class ChessPiece(val rawValue: String) {
     Empty("  "),
@@ -42,6 +44,48 @@ enum class ChessPiece(val rawValue: String) {
         fun king(@argLabel("ofPlayer") player: Player) : ChessPiece {
             return if (player == Player.white) WhiteKing else BlackKing
         }
+
+        fun pawnValue(@argLabel("at") c: Coords, @argLabel("forPlayer") p: Player) : Double {
+            val borderRankValues = doubleArrayOf(0.0, -0.01, -0.05, 0.0, 0.1, 0.2)
+            var result = 1.0
+            val yDelta = abs(c.y - ChessBoard.yIndex(2, p))
+            when (c.x) {
+                3, 4 -> result += yDelta * 0.08
+                else -> result += borderRankValues[yDelta]
+            }
+            return result
+        }
+
+        fun knightValue(@argLabel("at") c: Coords) : Double {
+            return 3.0 + centerPreferringValue(c, 0.05)
+        }
+
+        fun bishopValue(@argLabel("at") c: Coords) : Double {
+            return 3.0 + centerPreferringValue(c, 0.02)
+        }
+
+        fun rookValue(@argLabel("at") c: Coords) : Double {
+            return 5.0 + centerPreferringValue(c, 0.01)
+        }
+
+        fun queenValue(@argLabel("at") c: Coords) : Double {
+            return 9.0 + centerPreferringValue(c, 0.02)
+        }
+
+        fun kingValue(@argLabel("at") c: Coords, @argLabel("forPlayer") p: Player) : Double {
+            if (c.y != ChessBoard.yIndex(1, p)) return -0.05
+            val xValues = doubleArrayOf(0.1, 0.2, 0.1, 0.0, 0.0, 0.1, 0.2, 0.1)
+            return xValues[c.x]
+        }
+
+        private fun centerPreferringValue(@argLabel("at") c: Coords, @argLabel("withWeight") w: Double) : Double {
+            var result = 0.0
+            val xFromCenter = abs(3.5 - c.x) - 0.5
+            val yFromCenter = abs(3.5 - c.y) - 0.5
+            result -= xFromCenter * w
+            result -= yFromCenter * w
+            return result
+        }
     }
 
     override fun toString(): String {
@@ -73,20 +117,20 @@ enum class ChessPiece(val rawValue: String) {
             return null
         }
 
-    val value: Double
-        get() {
-            player?.let { p ->
-                val sign = p.sign
-                when (this) {
-                    ChessPiece.pawn(p) -> return sign * 1.0
-                    ChessPiece.knight(p) -> return sign * 3.0
-                    ChessPiece.bishop(p) -> return sign * 3.0
-                    ChessPiece.rook(p) -> return sign * 5.0
-                    ChessPiece.queen(p) -> return sign * 9.0
-                    else -> return 0.0
-                }
+    fun value(c: Coords) : Double {
+        player?.let { p ->
+            val sign = p.sign
+            when (this) {
+                ChessPiece.pawn(p) -> return sign * ChessPiece.pawnValue(c, p)
+                ChessPiece.knight(p) -> return sign * ChessPiece.knightValue(c)
+                ChessPiece.bishop(p) -> return sign * ChessPiece.bishopValue(c)
+                ChessPiece.rook(p) -> return sign * ChessPiece.rookValue(c)
+                ChessPiece.queen(p) -> return sign * ChessPiece.queenValue(c)
+                ChessPiece.king(p) -> return sign * ChessPiece.kingValue(c, p)
+                else -> return 0.0
             }
-
-            return 0.0
         }
+
+        return 0.0
+    }
 }
