@@ -1,6 +1,7 @@
 package de.thm.mow.boardgame.model
 
 import de.thm.mow.boardgame.model.support.*
+import kotlin.math.abs
 
 class AI<P, GL : GameLogic<P>>(val logic: GL) {
     var maxSearchDepth = 2
@@ -9,7 +10,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
     }
 
     private fun getNextMove(@argLabel("onBoard") board: Board<P>, @argLabel("forPlayer") player: Player, maximizingValue: Boolean, @argLabel("withDepth") depth: Int) : Move<P> {
-        var bestMove: Move<P>? = null
+        val bestMoves = mutableListOf<Move<P>>()
         val allMoves = logic.getMoves(board, player)
         for (i in 0 until allMoves.size) {
             var move = allMoves[i]
@@ -26,20 +27,24 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
             }
 
             if (depth == maxSearchDepth) {
-                println("depth: ${depth}, (${move.source}), best value: ${bestMove?.value ?: 0}, current value: ${move.value!!}")
+                println("depth: ${depth}, (${move.source}), best value: ${bestMoves.firstOrNull()?.value ?: 0}, size = ${bestMoves.size}, current value: ${move.value!!}")
             }
 
-            if ((bestMove == null) || ((move.value!! > bestMove!!.value!!) == maximizingValue)) {
-                bestMove = move
+            if (bestMoves.isEmpty() || abs(bestMoves.first().value!! - move.value!!) < 0.01) {
+                bestMoves.add(move)
+            } else {
+                if ((move.value!! > bestMoves.first().value!!) == maximizingValue) {
+                    bestMoves.clear()
+                    bestMoves.add(move)
+                }
             }
         }
 
-        if ((bestMove == null)) {
+        if (bestMoves.isEmpty()) {
             // return empty dummy move if there is no real move
-            bestMove = Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board, player))
+            bestMoves.add(Move<P>(Coords(0, 0), mutableListOf(Step(Coords(0, 0), mutableListOf<Effect<P>>())), logic.evaluateBoard(board, player)))
         }
 
-        assert(bestMove!!.value != null)
-        return bestMove!!
+        return bestMoves.random()
     }
 }
