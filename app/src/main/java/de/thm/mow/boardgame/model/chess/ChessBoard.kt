@@ -42,7 +42,7 @@ class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, 
             }
         }
 
-        if (targetPiece == ChessPiece.pawn(p) && target.coords.y == yIndex(4, p) && source.coords.y == yIndex(2, p)) {
+        if (targetPiece == ChessPiece.pawn(p) && target.coords.y == ChessBoard.yIndex(4, p) && source.coords.y == ChessBoard.yIndex(2, p)) {
             twoStepsPawn = target.coords
         } else {
             twoStepsPawn = null
