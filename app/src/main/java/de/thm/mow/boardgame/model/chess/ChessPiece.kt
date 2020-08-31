@@ -52,6 +52,7 @@ enum class ChessPiece(val rawValue: String) {
                 3, 4 -> result += yDelta * 0.08
                 else -> result += borderRankValues[yDelta]
             }
+
             return result
         }
 
@@ -72,7 +73,10 @@ enum class ChessPiece(val rawValue: String) {
         }
 
         fun kingValue(@argLabel("at") c: Coords, @argLabel("forPlayer") p: Player) : Double {
-            if (c.y != ChessBoard.yIndex(1, p)) return -0.05
+            if (c.y != ChessBoard.yIndex(1, p)) {
+                return -0.05
+            }
+
             val xValues = doubleArrayOf(0.1, 0.2, 0.1, 0.0, 0.0, 0.1, 0.2, 0.1)
             return xValues[c.x]
         }

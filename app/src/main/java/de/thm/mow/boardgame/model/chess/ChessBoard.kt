@@ -4,15 +4,15 @@ import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.support.*
 
 class ChessBoard(pieces: MutableList<ChessPiece>, var evaluation: Double = 0.0, var whiteKing: Coords = Coords(4, 7), var blackKing: Coords = Coords(4, 0), var twoStepsPawn: Coords? = null) : Board<ChessPiece>(ChessPiece.Invalid, pieces) {
-    constructor() : this(MutableList<ChessPiece>(ChessPiece.Empty, 64))
-    override fun clone() : Board<ChessPiece> {
-        return ChessBoard(pieces.copy(), evaluation, whiteKing, blackKing, twoStepsPawn)
-    }
-
     companion object {
         fun yIndex(@argLabel("ofRank") rank: Int, @argLabel("forPlayer") player: Player) : Int {
             return if (player == Player.white) 8 - rank else -1 + rank
         }
+    }
+
+    constructor() : this(MutableList<ChessPiece>(ChessPiece.Empty, 64))
+    override fun clone() : Board<ChessPiece> {
+        return ChessBoard(pieces.copy(), evaluation, whiteKing, blackKing, twoStepsPawn)
     }
 
     override fun applyChanges(@argLabel("_") changes: MutableList<Effect<ChessPiece>>) {
