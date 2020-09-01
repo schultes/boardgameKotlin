@@ -14,10 +14,6 @@ import de.thm.mow.boardgame.model.*
 import de.thm.mow.boardgame.model.checkers.CheckersGameLogic
 import de.thm.mow.boardgame.model.chess.ChessGameLogic
 import de.thm.mow.boardgame.model.reversi.ReversiGameLogic
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private var game: Game = GenericGame(CheckersGameLogic())
@@ -53,9 +49,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
         game.userAction(v.tag as Coords)
         refreshUI()
         if (!game.isCurrentPlayerWhite) {
-            GlobalScope.launch(Dispatchers.Main) {
-                val timestamp = System.nanoTime()
-                withContext(Dispatchers.Default) {game.aiMove()}
+            val timestamp = System.nanoTime()
+            game.aiMove {
                 findViewById<TextView>(R.id.tvTime).text = "${(System.nanoTime() - timestamp) / 1_000_000} ms"
                 refreshUI()
             }
@@ -101,8 +96,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        findViewById<TextView>(R.id.tvAiDepth).text = "AI search depth: ${progress+1}"
-        game.aiSetSearchDepth(progress+1)
+        findViewById<TextView>(R.id.tvAiDepth).text = "AI search depth: ${progress+2}"
+        game.aiSetSearchDepth(progress+2)
     }
     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
     override fun onStopTrackingTouch(seekBar: SeekBar?) {}

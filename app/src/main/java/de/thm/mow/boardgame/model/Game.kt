@@ -10,7 +10,7 @@ interface Game {
     fun getCurrentTargets() : MutableList<Coords>
     fun restart()
     fun userAction(@argLabel("atCoords") coords: Coords) : Boolean
-    fun aiMove() : Boolean
+    fun aiMove(finished: () -> Unit)
     fun aiSetSearchDepth(@argLabel("_") depth: Int)
 }
 
@@ -98,7 +98,7 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
                 val allMoves = logic.getMoves(currentBoard, currentPlayer)
                 if (allMoves.isEmpty()) {
                     // add empty dummy move if there is no real move
-                    val dummyMove = Move<P>(Coords(x, y), mutableListOf(Step(Coords(x, y), mutableListOf<Effect<P>>())), null)
+                    val dummyMove = Move<P>(Coords(x, y), mutableListOf(Step(Coords(x, y), mutableListOf<Effect<P>>())))
                     moves.add(dummyMove)
                 }
             }
@@ -112,19 +112,16 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
         return false
     }
 
-    override fun aiMove() : Boolean {
+    override fun aiMove(finished: () -> Unit) {
         if (result.finished) {
-            return false
+            finished()
+            return
         }
 
-        val nextMove = ai.getNextMove(currentBoard, currentPlayer)
-        for (step in nextMove.steps) {
-            currentBoard.applyChanges(step.effects)
+        ai.performMove(currentBoard, currentPlayer) {
+            currentPlayer = currentPlayer.opponent
+            finished()
         }
-
-        currentPlayer = currentPlayer.opponent
-        println(logic.evaluateBoard(currentBoard, currentPlayer))
-        return true
     }
 
     override fun aiSetSearchDepth(@argLabel("_") depth: Int) {

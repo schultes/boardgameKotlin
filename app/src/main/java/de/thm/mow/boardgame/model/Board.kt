@@ -6,8 +6,14 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     val columns = 8
     val rows = 8
     constructor(empty: P, invalid: P) : this(invalid, MutableList<P>(empty, 64))
-    open fun clone() : Board<P> {
+    protected open fun clone() : Board<P> {
         return Board<P>(invalid, pieces.copy())
+    }
+
+    fun changedCopy(changes: MutableList<Effect<P>>) : Board<P> {
+        val copiedBoard = clone()
+        copiedBoard.applyChanges(changes)
+        return copiedBoard
     }
 
     private fun indexIsValidFor(row: Int, column: Int) : Boolean {

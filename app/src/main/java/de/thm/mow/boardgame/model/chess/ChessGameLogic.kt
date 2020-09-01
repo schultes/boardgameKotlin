@@ -177,7 +177,7 @@ class ChessGameLogic : GameLogic<ChessPiece> {
 
                 if (allowed) {
                     val effects = mutableListOf(Effect(sc, ChessPiece.Empty), Effect(rookTarget, ChessPiece.rook(player)), Effect(rookSource, ChessPiece.Empty), Effect(kingTarget, ChessPiece.king(player)))
-                    moves += Move<ChessPiece>(sc, mutableListOf(Step(kingTarget, effects)), null)
+                    moves += Move<ChessPiece>(sc, mutableListOf(Step(kingTarget, effects)))
                 }
             }
         }
@@ -197,9 +197,8 @@ class ChessGameLogic : GameLogic<ChessPiece> {
     }
 
     private fun addMove(moves: MutableList<Move<ChessPiece>>, board: Board<ChessPiece>, player: Player, sc: Coords, tc: Coords, effects: MutableList<Effect<ChessPiece>>) {
-        val newMove = Move<ChessPiece>(sc, mutableListOf(Step(tc, effects)), null)
-        val newBoard = board.clone()
-        newBoard.applyChanges(effects)
+        val newMove = Move<ChessPiece>(sc, mutableListOf(Step(tc, effects)))
+        val newBoard = board.changedCopy(effects)
         if (!isInCheck(newBoard, player)) {
             moves += newMove
         }

@@ -8,5 +8,5 @@ import de.thm.mow.boardgame.model.support.*
 
 @tuple data class Step<P>(var target: Coords, var effects: MutableList<Effect<P>>) {}
 
-data class Move<P>(val source: Coords, val steps: MutableList<Step<P>>, var value: Double?) {
+data class Move<P>(val source: Coords, val steps: MutableList<Step<P>>) {
 }

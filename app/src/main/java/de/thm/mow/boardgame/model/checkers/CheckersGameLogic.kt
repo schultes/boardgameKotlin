@@ -62,7 +62,7 @@ class CheckersGameLogic : GameLogic<CheckersPiece> {
                                 }
 
                                 val targetPiece = getTargetPiece(board, player, tc, sourcePiece)
-                                normalMoves.add(Move<CheckersPiece>(sc, mutableListOf(Step(tc, mutableListOf(Effect(sc, CheckersPiece.Empty), Effect(tc, targetPiece)))), null))
+                                normalMoves.add(Move<CheckersPiece>(sc, mutableListOf(Step(tc, mutableListOf(Effect(sc, CheckersPiece.Empty), Effect(tc, targetPiece))))))
                             }
                         }
                     }
@@ -70,7 +70,7 @@ class CheckersGameLogic : GameLogic<CheckersPiece> {
                     // capture
                     val arrayOfSteps = recursiveCapture(board, player, sc, range, yDirections)
                     for (steps in arrayOfSteps) {
-                        captureMoves.add(Move<CheckersPiece>(sc, steps, null))
+                        captureMoves.add(Move<CheckersPiece>(sc, steps))
                     }
                 }
             }
@@ -108,8 +108,7 @@ class CheckersGameLogic : GameLogic<CheckersPiece> {
                                 // promotion took place (man -> king): stop recursion!
                                 result.add(thisSteps)
                             } else {
-                                val newBoard = board.clone()
-                                newBoard.applyChanges(effects)
+                                val newBoard = board.changedCopy(effects)
                                 val arrayOfSubsequentSteps = recursiveCapture(newBoard, player, t2c, range, yDirections)
                                 if (arrayOfSubsequentSteps.isEmpty()) {
                                     result.add(thisSteps)

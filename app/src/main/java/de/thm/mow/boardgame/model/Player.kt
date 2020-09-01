@@ -8,4 +8,6 @@ enum class Player {
     val sign: Double
         get() = if (this == white) +1.0 else -1.0
 
+    val isMaximizing: Boolean
+        get() = this == white
 }

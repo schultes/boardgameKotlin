@@ -50,7 +50,7 @@ class ReversiGameLogic : GameLogic<ReversiPiece> {
             if ((!allChanges.isEmpty())) {
                 val newElement = arrayOf(Effect(sourceCoords, playersPiece))
                 allChanges += newElement
-                val move = Move<ReversiPiece>(sourceCoords, mutableListOf(Step(sourceCoords, allChanges)), null)
+                val move = Move<ReversiPiece>(sourceCoords, mutableListOf(Step(sourceCoords, allChanges)))
                 result.add(move)
             }
         }
