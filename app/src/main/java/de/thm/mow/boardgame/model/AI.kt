@@ -11,7 +11,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
             val bestMoves = mutableListOf<Move<P>>()
             val allMoves = logic.getMoves(board, player)
             val values = mutableListOf<Deferred<Double>>()
-            allMoves.map { it.steps.first().effects }.forEach {
+            allMoves.forEach {
                 values.add(GlobalScope.async {
                     getValue(board.changedCopy(it), player.opponent, maxSearchDepth - 2)
                 })
@@ -31,7 +31,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
             }
 
             if (bestMoves.isNotEmpty()) {
-                board.applyChanges(bestMoves.random().steps.first().effects)
+                board.applyChanges(bestMoves.random())
             }
 
             finished()
@@ -41,7 +41,7 @@ class AI<P, GL : GameLogic<P>>(val logic: GL) {
     private fun getValue(@argLabel("onBoard") board: Board<P>, @argLabel("forPlayer") player: Player, @argLabel("withDepth") depth: Int) : Double {
         val allMoves = if (depth < 0) mutableListOf() else logic.getMoves(board, player)
         var bestValue: Double? = null
-        allMoves.map { it.steps.first().effects }.forEach {
+        allMoves.forEach {
             val value = getValue(board.changedCopy(it), player.opponent, depth - 1)
             if (bestValue == null || (value > bestValue!!) == player.isMaximizing) {
                 bestValue = value

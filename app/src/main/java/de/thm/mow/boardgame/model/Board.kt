@@ -16,6 +16,12 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
         return copiedBoard
     }
 
+    fun changedCopy(move: Move<P>) : Board<P> {
+        val copiedBoard = clone()
+        copiedBoard.applyChanges(move)
+        return copiedBoard
+    }
+
     private fun indexIsValidFor(row: Int, column: Int) : Boolean {
         return row >= 0 && row < rows && column >= 0 && column < columns
     }
@@ -43,6 +49,12 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     operator fun set(column: Int, row: Int, newValue: P) {
         assert(indexIsValidFor(row, column), "Index out of range")
         pieces[indexFor(row, column)] = newValue
+    }
+
+    fun applyChanges(move: Move<P>) {
+        move.steps.forEach {
+            applyChanges(it.effects)
+        }
     }
 
     open fun applyChanges(@argLabel("_") changes: MutableList<Effect<P>>) {
