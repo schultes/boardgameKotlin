@@ -20,7 +20,7 @@ class BoardTest {
 
         val effects = mutableListOf(Effect(Coords(1,1), CheckersPiece.BlackMan), Effect(Coords(2,2), CheckersPiece.BlackMan))
         val steps = mutableListOf(Step(Coords(1,1), effects))
-        val move = Move(Coords(0,0), steps, null)
+        val move = Move(Coords(0,0), steps)
         board.applyChanges(move.steps[0].effects)
 
         Assert.assertTrue(board[0, 0] == CheckersPiece.Empty)
