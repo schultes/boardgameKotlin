@@ -1,5 +1,6 @@
 package de.thm.mow.boardgame.model.support
 
+import kotlinx.coroutines.*
 import kotlin.math.abs
 
 fun assert(value: Boolean, message: String) {
@@ -38,3 +39,13 @@ val Int.absoluteValue : Int
 
 annotation class argLabel(val name: String)
 annotation class tuple
+
+// Concurrency
+fun <T, R> Iterable<T>.asyncMap(transform: (T) -> R, processResult: (List<R>) -> Unit) {
+    GlobalScope.launch(Dispatchers.Main) {
+        val result = mutableListOf<R>()
+        val deferred = this@asyncMap.map { GlobalScope.async { transform(it) } }
+        deferred.forEach { result.add(it.await()) }
+        processResult(result)
+    }
+}
