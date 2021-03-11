@@ -21,7 +21,7 @@ class GenericGame<P, GL : GameLogic<P>>(private val logic: GL) : Game {
     private var currentMoves: MutableList<Move<P>>? = null
     private var currentStepIndex = 0
     init {
-        this.ai = AI(logic)
+        ai = AI(logic)
         currentBoard = logic.getInitialBoard()
     }
 
