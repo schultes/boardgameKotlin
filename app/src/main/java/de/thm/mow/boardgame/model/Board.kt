@@ -6,7 +6,7 @@ open class Board<P>(val invalid: P, val pieces: MutableList<P>) {
     val columns = 8
     val rows = 8
     constructor(empty: P, invalid: P) : this(invalid, MutableList<P>(empty, 64))
-    protected open fun clone() : Board<P> {
+    open fun clone() : Board<P> {
         return Board<P>(invalid, pieces.copy())
     }
 
